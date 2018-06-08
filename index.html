@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>最佳猿语言</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <img src="img/c.png" style="display: inline-block;float: left;margin-right: 10px;height:45px;">
+            <a class="navbar-brand" href="#"> 最佳猿语言</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container main" id="app">
+    <div class="title">
+        <img src="img/d.png" style="height: 30px;">
+        <div id="divTyping" style="margin-bottom: 15px;display: inline-block"></div>
+        <div id="divTyping2"></div>
+    </div>
+    <div class="tip">
+        基于新一代区块链公链星云链，永久保存，不可篡改
+    </div>
+
+
+    <div class="item-wrap">
+        <!--<div class="title2">
+            <img src="img/icon5.png" alt="">
+            平行空间
+        </div>-->
+        <div class="item" v-for="(s,index) in list">
+            <div class="icon">
+            </div>
+            <div class="content">
+                <div class="name">
+                    <div>
+                        <img src="img/b.png" style="height: 28px;">
+                        <span class="nc" v-html="getName(s.value)"></span>
+                    </div>
+                    <span class="sc" v-html="getKey(s.key)"></span>
+                </div>
+                <div class="text">
+                   <span v-html="getCont(s.value)"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="inp">
+        <div class="time">
+            <select id="schoolType" style="margin-top: 30px">
+                <option value="0">请选择</option>
+                <option v-for="(t,index) in typeList" :value="index+1" v-html="t"></option>
+            </select>
+        </div>
+        <div class="content">
+            <span style="padding-top: 12px"></span>
+            <textarea id="content" rows="4" placeholder="理由"></textarea>
+        </div>
+        <div id="push" onclick="push()">
+            提交
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Copyright &copy; 2018.基于新一代区块链公链
+        <a href="https://nebulas.io/" target="_blank">NAS</a>
+    </p>
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="js/layer/layer.js"></script>
+<script src="js/nebPay.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+
+    var NebPay = require("nebpay");
+    var nebPay = new NebPay();
+
+    //检查扩展是否已安装
+    //如果安装了扩展，var“webExtensionWallet”将被注入到web页面中
+    if (typeof(webExtensionWallet) === "undefined") {
+        //alert ("扩展钱包未安装，请先安装.")
+        $("#noExtension").show();
+    }
+
+    var dappAddress = "n1tGyqn8cnaXDi3EeYbbLGsii5WcMRKQY1P";
+    var initKey = '';
+    setInterval(function () {
+        getPredict(0);
+    }, 10000);
+    getPredict(0);
+
+    // 初始化
+    function getPredict(page) {
+        var to = dappAddress;
+        var value = "0";
+        var callFunction = "forEach";
+        var callArgs = "[1000," + page * 10 + "]";
+        nebPay.simulateCall(to, value, callFunction, callArgs, {
+            listener: cbSearch
+        });
+    }
+
+    //return of search,
+    function cbSearch(resp) {
+        $('#app').show();
+        if (!resp.result) return;
+        var result = eval(JSON.parse(resp.result));
+        if (result !== 'null') {
+            Vue.set(app, 'list', result)
+        }
+    }
+
+    // 提交
+    function push() {
+        var schoolType = $('#schoolType').val();
+        var content = $('#content').val();
+        if (schoolType == '0') {
+            layer.msg('语言不能为空');
+            return;
+        } else if (content == '') {
+            layer.msg('内容不能为空');
+            return;
+        }
+
+        initKey = RndNum(3);
+        var to = dappAddress;
+        var value = "0";
+        var callFunction = "set"
+        var callArgs = [];
+        callArgs.push(initKey);
+        callArgs.push(schoolType + '|-|' + content);
+        nebPay.call(to, value, callFunction, JSON.stringify(callArgs), {
+            listener: cbPush
+        });
+    }
+
+    function cbPush(resp) {
+        console.log("response of push: " + resp);
+        $("#word").val('')
+    }
+
+    //产生随机数函数
+    function RndNum(n) {
+        var rnd = "";
+        for (var i = 0; i < n; i++)
+            rnd += Math.floor(Math.random() * 10);
+        return rnd;
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            list: [],
+            typeList: ['java', 'c', 'c++', 'python', 'c#', 'javascript','html', 'vb',
+                'R', 'php', 'swift', 'object-c', 'perl', 'ruby', 'go', 'pl/sql', 'vb.net']
+        },
+        methods: {
+            getName: function (text) {
+                if (text) {
+                    var val=text.split('|-|')[0];
+                    return this.typeList[parseInt(val-1)];
+                } else {
+                    return ' ';
+                }
+
+            },
+            getCont: function (text) {
+                if (text) {
+                    return text.split('|-|')[1];
+                } else {
+                    return ' ';
+                }
+            },
+            getKey: function (text) {
+                if (text) {
+                    var len = text.length;
+                    return text.substring(0, 15) + '...' + text.substring(25, len - 3);
+                } else {
+                    return ' ';
+                }
+            }
+        }
+    })
+
+    var str = '还记得你学习编程写的第一句代码么，hello world！';
+    var i = 0;
+
+    function typing() {
+        var divTyping = document.getElementById('divTyping');
+        if (i <= str.length) {
+            divTyping.innerHTML = str.slice(0, i++) + '|';
+            setTimeout('typing()', 200);//递归调用
+        }
+        else {
+            divTyping.innerHTML = str;//结束打字,移除 _ 光标
+            typing2();
+        }
+    }
+
+    typing();
+
+    var str2 = '开发语言有很多，说出你心目中的最佳语言！';
+    var i2 = 0;
+
+    function typing2() {
+        var divTyping2 = document.getElementById('divTyping2');
+        if (i2 <= str2.length) {
+            divTyping2.innerHTML = str2.slice(0, i2++) + '|';
+            setTimeout('typing()', 200);//递归调用
+        }
+        else {
+            divTyping2.innerHTML = str2;//结束打字,移除 _ 光标
+        }
+    }
+
+</script>
+
+</body>
+
+</html>
