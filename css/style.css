@@ -55,12 +55,15 @@ body {
     background: #fff;
     position: relative;
     font-size: 15px;
+    box-shadow: 0 2px 3px 0 #ccc;
 }
-.item-wrap .item .icon{
+
+.item-wrap .item .icon {
     position: absolute;
     top: -16px;
     left: -16px;
 }
+
 .item-wrap .item .icon img {
     width: 42px;
     height: 42px;
@@ -72,7 +75,7 @@ body {
 
 .item-wrap .item .content {
     height: 100%;
-width: 100%;
+    width: 100%;
 }
 
 .item-wrap .item .content .name {
@@ -82,7 +85,7 @@ width: 100%;
 }
 
 .item-wrap .item .content .text {
-padding-top: 10px;
+    padding-top: 10px;
 }
 
 .title2 {
@@ -123,7 +126,8 @@ padding-top: 10px;
     display: flex;
     align-items: center;
 }
-.inp .time img{
+
+.inp .time img {
     height: 25px;
     margin-right: 10px;
 }
@@ -135,6 +139,7 @@ padding-top: 10px;
     border-radius: 4px;
     padding: 0px 10px;
 }
+
 .inp .time select {
     height: 35px;
     border: 1px solid #ccc;
@@ -163,16 +168,17 @@ padding-top: 10px;
     color: #fff;
 }
 
-.name{
+.name {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
-.name .nc{
+
+.name .nc {
     font-weight: bold;
 }
 
-.name .sc{
+.name .sc {
     font-size: 12px;
     color: #666;
 }

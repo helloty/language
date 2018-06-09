@@ -54,8 +54,9 @@
         </div>
     </div>
     <div class="inp">
-        <div class="time">
-            <select id="schoolType" style="margin-top: 30px">
+        <div class="time"  style="margin-top: 30px">
+            <span>我喜欢&nbsp;</span>
+            <select id="schoolType">
                 <option value="0">请选择</option>
                 <option v-for="(t,index) in typeList" :value="index+1" v-html="t"></option>
             </select>
@@ -192,7 +193,7 @@
         }
     })
 
-    var str = '还记得你学习编程写的第一句代码么，hello world！';
+    var str = '还记得你学习编程写的第一行代码么，hello world！';
     var i = 0;
 
     function typing() {
